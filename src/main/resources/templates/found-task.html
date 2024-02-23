@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Found</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+
+<body>
+    <div>
+        <header>
+            <nav>
+                <a href="/api/task">Main</a>
+                <a href="/api/task/add">Add Task</a>
+            </nav>
+        </header>
+        <hr>
+    </div>
+
+    <div class="input-group">
+        <form action="/api/task/search" method="post">
+            <label>Choose a status:</label>
+            <input type="radio" name ="status" value="active" id="id_filter_active">
+            <label for="id_filter_active" class="form-label">active</label>
+
+            <input type="radio" name ="status" value="done" id="id_filter_done">
+            <label for="id_filter_done" class="form-label">done</label>
+
+            <input type="radio" name ="status" value="none" id="id_filter_none">
+            <label for="id_filter_none" class="form-label">none</label>
+
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <div>
+        <table>
+            <thead class="table-header" style="background-color: orange; border: 4px chartreuse">
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Remove</th>
+                <th>Update</th>
+            </tr>
+            </thead>
+
+            <tbody style="border: 4px #000000">
+            <tr th:each="item : ${foundTask}">
+                <td th:text="${item.title}"></td>
+                <td th:text="${item.description}"></td>
+                <td th:text="${item.dueDate}"></td>
+                <td th:text="${item.status}"></td>
+                <td><a th:href="@{/api/task/remove/{id}(id=${item.id})}">remove</a></td>
+                <td><a th:href="@{/api/task/update/{id}(id=${item.id})}">update</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
