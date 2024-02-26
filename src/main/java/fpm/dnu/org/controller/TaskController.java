@@ -47,18 +47,24 @@ public class TaskController {
     }
 
     @PostMapping("/task/edit-task/{id}")
-    public String updateTask(@PathVariable("id") String id, Tasks updatedTask){
-        if(LocalDate.now().isAfter(updatedTask.getDueDate())){
-            throw new IllegalArgumentException("Time isn't correct");
-        }else {
-            Optional<Tasks> task = taskService.findById(id);
-            Tasks newTask = task.get();
-            newTask.setTitle(updatedTask.getTitle());
-            newTask.setDescription(updatedTask.getDescription());
-            newTask.setDueDate(updatedTask.getDueDate());
-            newTask.setStatus(updatedTask.getStatus());
-            taskService.update(newTask);
-            return "redirect:/api/task";
+    public String updateTask(@PathVariable("id") String id, Tasks updatedTask, Model model){
+        try {
+            if (LocalDate.now().isAfter(updatedTask.getDueDate())) {
+                throw new IllegalArgumentException("Time isn't correct");
+            } else {
+                Optional<Tasks> task = taskService.findById(id);
+                Tasks newTask = task.get();
+                newTask.setTitle(updatedTask.getTitle());
+                newTask.setDescription(updatedTask.getDescription());
+                newTask.setDueDate(updatedTask.getDueDate());
+                newTask.setStatus(updatedTask.getStatus());
+                taskService.update(newTask);
+                return "redirect:/api/task";
+            }
+        }
+        catch (IllegalArgumentException e){
+            model.addAttribute("errorMessage", e.getMessage());
+            return "error";
         }
     }
 
@@ -77,27 +83,22 @@ public class TaskController {
     public String addTask(@RequestParam("title") String title,
                           @RequestParam("description") String description,
                           @RequestParam("dueDate") LocalDate dueDate,
-                          @RequestParam("status") String status) {
-        if(LocalDate.now().isAfter(dueDate)){
-            throw new IllegalArgumentException("Time isn't correct");
-        } else {
-            Tasks newTask = new Tasks();
-            newTask.setTitle(title);
-            newTask.setDescription(description);
-            newTask.setDueDate(dueDate);
-            newTask.setStatus(status);
-            taskService.addTask(newTask);
-            return "redirect:/api/task";
+                          @RequestParam("status") String status, Model model) {
+        try {
+            if (LocalDate.now().isAfter(dueDate)) {
+                throw new IllegalArgumentException("Time isn't correct");
+            } else {
+                Tasks newTask = new Tasks();
+                newTask.setTitle(title);
+                newTask.setDescription(description);
+                newTask.setDueDate(dueDate);
+                newTask.setStatus(status);
+                taskService.addTask(newTask);
+                return "redirect:/api/task";
+            }
+        }catch (IllegalArgumentException e){
+            model.addAttribute("errorMessage", e.getMessage());
+            return "error";
         }
     }
-
-    /*@GetMapping("/task")
-    public ResponseEntity<?> getAllTask(){
-        List<Tasks> list = taskService.findAll();
-        if(list.size() > 0){
-            return new ResponseEntity<>(list, HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>("No available task", HttpStatus.NOT_FOUND);
-        }
-    }*/
 }
