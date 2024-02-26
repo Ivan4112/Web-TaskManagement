@@ -5,8 +5,10 @@ import fpm.dnu.org.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskService {
@@ -42,5 +44,12 @@ public class TaskService {
 
     public List<Tasks> findByStatus(String status) {
         return repository.findByStatus(status);
+    }
+
+    public List<Tasks> findAllSortedByStatus() {
+        List<Tasks> tasks = repository.findAll();
+        return tasks.stream()
+                .sorted(Comparator.comparing(Tasks::getStatus))
+                .collect(Collectors.toList());
     }
 }

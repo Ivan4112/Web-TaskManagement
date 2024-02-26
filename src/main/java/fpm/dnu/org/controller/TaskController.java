@@ -66,9 +66,6 @@ public class TaskController {
     public String getTaskByTitle(@RequestParam(value = "title", required = false) String title,
                                  @RequestParam(value = "status", required = false) String status, Model model) {
         if(status != null) {
-            if (status.equals("none")) {
-                return "found-task";
-            }
             model.addAttribute("foundTask", taskService.findByStatus(status));
         } else if (title != null) {
             model.addAttribute("foundTask", taskService.findByTitle(title));
